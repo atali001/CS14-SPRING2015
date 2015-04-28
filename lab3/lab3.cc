@@ -1,189 +1,324 @@
-
-#include <forward_list>
 #include "lab3.h"
-#include <iostream>
 
-
-using namespace std;
-
-
-List::List()
+template<class T>
+TwoStackFixed<T>::TwoStackFixed(int size, int maxtop)
 {
-   head = 0;
-   tail = 0;
+   array = new T[size];
+   max=maxtop;
+   cap=size;
+   top1=-1;
+   top2=size;
 }
 
-List::~List()
+template<class T>
+void TwoStackFixed<T>::pushStack1(T value)
 {
-   while( head!= 0)
+   if(isFullStack1())
    {
-      pop_front();
-   }
-}
-
-void List::display() const
-{
-   if (head!=0)
-   {
-      Node* point;
-      point = head;
-   
-      while(point!=tail)
-      {
-         cout << point->data  << " ";
-         point=point->next;
-      }
-   
-      cout << point->data;   
+      cout << "Error: cannot push onto stack, b/c it is full\n";
+      return;
    }
    
+   array[top1+1] = value;
+   top1++;
+   this->display();
 }
 
-void List::push_front( int value)
+template<class T>
+void TwoStackFixed<T>::pushStack2(T value)
 {
-   Node* temp;
-   temp = head;
-   head = new Node(value);
-   head->next=temp;
-   
-   if(tail==0)
+   if(isFullStack2())
    {
-      tail=head;
+      cout << "Error: cannot push onto stack, b/c it is full\n";
+      return;
    }
+   
+   array[top2-1] = value;
+   top2--;
+   this->display();
 }
 
-void List::pop_front()
+template<class T>
+T TwoStackFixed<T>::popStack1()
 {
-   if (head==tail)
+   if(this->isEmptyStack1())
    {
-      delete head;
-      head=0;
-      tail=0;
+      cout << "Error: cannot pop stack, b/c it is already empty\n";
    }
    else
    {
-      Node* temp;
-      temp = head->next;
-      delete head;
-      head = temp;
+      top1 = top1 -1;
+      return array[top1+1];
    }
-}                                            /// end of list functions
+   
+}
 
-
-int primeCount(forward_list<int> lst)        ///exercise 1
+template<class T>
+T TwoStackFixed<T>::popStack2()
 {
-   if(lst.empty())                           //basecase
+   if(this->isEmptyStack2())
    {
-         return 0;
+      cout << "Error: cannot pop stack, b/c it is already empty\n";
    }
    else
    {
-      int prime = isPrime(*lst.begin());   //chck if front num is prime then pop
-      lst.pop_front();
-      
-      int subtotal= prime + primeCount(lst);      //recursive case
-      return subtotal;
-   }
-}
-
-bool isPrime(int x)                           ///ex 1 helper fx
-{
-   for (int i=2; i<x; i++)
-	{
-		if (x % i == 0)
-		{
-			return false;
-		}
-	}
-	
-	return true;	
-}
-
-template <typename Type>
-
-void listCopy (forward_list<Type> L, forward_list <Type>& P)  //ex 3
-{
-   P.reverse();              
-   P.splice_after(P.before_begin(), L);
-   P.reverse();
-}
-
-void List::elementSwap(int pos )                          //ex 4
-{
-   Node* point = head;
-  
-  if (pos == 0)
-  {
-     point= head->next;
-     head->next=head->next->next;
-     point->next=head;
-     head = point;
-  }
-   
-   for (int i=1; i<pos; i++)
-   {
-      point = point->next; 
+      top2 = top2 +1;
+      return array[top2-1];
    }
    
-   Node* point1 = point->next;
-   
-   point->next = point1->next;
-   point = point1->next->next;
-   point1->next->next = point1;
-   point1->next=point;
 }
 
-template <typename Type>
-void printLots (forward_list <Type> L, forward_list <int> P)
-{                                                                     //ex2
-   int i=0;
-   
-   while (!P.empty())
+template<class T>
+bool TwoStackFixed<T>::isFullStack1()
+{
+   return (top1==max);
+}
+
+template<class T>
+bool TwoStackFixed<T>::isFullStack2()
+{
+   return (top2==max+1);
+}
+
+template<class T>
+bool TwoStackFixed<T>::isEmptyStack1()
+{
+   return (top1==-1);
+}
+
+template<class T>
+bool TwoStackFixed<T>::isEmptyStack2()
+{
+   return (top2==cap);
+}
+
+template<class T>
+void TwoStackFixed<T>::display()
+{
+   for(int i=0; i<cap; i++)
    {
-      if(i==P.front())
+      if(top1>=i || top2<=i)
       {
-         cout << L.front() << " ";
-         P.pop_front();
+         cout << array[i];
       }
-      
-      L.pop_front();
-      i++;
-      
+      else
+      {
+         cout << ' ';
+      }
    }
    cout << endl;
 }
 
+
+//START OF EXERCISE 2
+
+template<class T>
+TwoStackOptimal<T>::TwoStackOptimal(int size)
+{
+   array = new T[size];
+   max=size/2;
+   cap=size;
+   top1=-1;
+   top2=size;
+}
+
+template<class T>
+void TwoStackOptimal<T>::pushFlexStack1(T value)
+{
+   if(isFullStack1())
+   {
+      cout << "Error: cannot push onto stack, b/c it is full\n";
+      return;
+   }
+   
+   array[top1+1] = value;
+   top1++;
+   this->display();
+}
+
+template<class T>
+void TwoStackOptimal<T>::pushFlexStack2(T value)
+{
+   if(isFullStack2())
+   {
+      cout << "Error: cannot push onto stack, b/c it is full\n";
+      return;
+   }
+   
+   array[top2-1] = value;
+   top2--;
+   this->display();
+}
+
+template<class T>
+T TwoStackOptimal<T>::popFlexStack1()
+{
+   if(this->isEmptyStack1())
+   {
+      cout << "Error: cannot pop stack, b/c it is already empty\n";
+   }
+   else
+   {
+      top1 = top1 -1;
+      return array[top1+1];
+   }
+   
+}
+
+template<class T>
+T TwoStackOptimal<T>::popFlexStack2()
+{
+   if(this->isEmptyStack2())
+   {
+      cout << "Error: cannot pop stack, b/c it is already empty\n";
+   }
+   else
+   {
+      top2 = top2 +1;
+      return array[top2-1];
+   }
+   
+}
+
+template<class T>
+bool TwoStackOptimal<T>::isFullStack1()
+{
+   if(top1!=max){return false;}
+   else if(max!=top2-1){max++; return false;}
+   else{return true;}
+}
+
+template<class T>
+bool TwoStackOptimal<T>::isFullStack2()
+{
+   if(top2!=max+1){return false;}
+   else if(max!=top1){max--; return false;}
+   else{return true;}
+}
+
+template<class T>
+bool TwoStackOptimal<T>::isEmptyStack1()
+{
+   return (top1==-1);
+}
+
+template<class T>
+bool TwoStackOptimal<T>::isEmptyStack2()
+{
+   return (top2==cap);
+}
+
+template<class T>
+void TwoStackOptimal<T>::display()
+{
+   for(int i=0; i<cap; i++)
+   {
+      if(top1>=i || top2<=i)
+      {
+         cout << array[i];
+      }
+      else
+      {
+         cout << ' ';
+      }
+   }
+   cout << endl;
+}
+
+template <typename T>
+void showTowerStates(int n, stack<T>& A, stack<T>& B, stack<T>& C)
+{
+   if(first) //if first call store locations of stacks
+   {
+      Aloc = &A;
+      Bloc = &B;
+      Cloc = &C;
+      
+      first = false;
+   }
+   
+   if(n == 1)
+   {
+      C.push(A.top());
+      A.pop();
+      cout << "moved " << C.top() << " from peg ";
+      if(&A==Aloc){cout << "A";}
+      else if(&A==Bloc){cout << "B";}
+      else if(&A==Cloc){cout << "C";}
+      cout << " to ";
+      if(&C==Aloc){cout << "A";}
+      else if(&C==Bloc){cout << "B";}
+      else if(&C==Cloc){cout << "C";}
+      cout << endl;
+   }
+   else
+	{
+	   showTowerStates(n - 1, A, C, B); //move n-1 disks to auxiliary stack
+
+		C.push(A.top());
+      A.pop();//Move the remaining disk to the destination peg.
+		cout << "moved " << C.top() << "from peg ";
+      if(&A==Aloc){cout << "A";}
+      else if(&A==Bloc){cout << "B";}
+      else if(&A==Cloc){cout << "C";}
+      cout << " to ";
+      if(&C==Aloc){cout << "A";}
+      else if(&C==Bloc){cout << "B";}
+      else if(&C==Cloc){cout << "C";}
+      cout << endl;
+
+		//Move the disks we just moved to the spare back over to the dest peg.
+		showTowerStates(n - 1, B, A, C);
+	}
+}
+
+
+
+   
 int main()
 {
-   
-   forward_list<int> L (3,40);
-   L.push_front(30);
-   L.push_front(20);
-   L.push_front(10);
-   L.push_front(9);
-   L.push_front(8);
-   forward_list<int> P (1,7);
-   P.push_front(4);
-   P.push_front(3);
-   P.push_front(1);
-   
-   List T;
-   T.push_front(7);
-   T.push_front(6);
-   T.push_front(5);
-   T.push_front(4);
-   T.push_front(3);
-   T.push_front(2);
-   
-   T.elementSwap(3);
-   T.display();
-   //listCopy (L,P);
-   //printLots(L,P);
-   /*while(!P.empty())
+   //TwoStackFixed<int> test(10, 6); // for exercise 1 test
+   //TwoStackOptimal<int> test(10);    // for exercise 2 test
+   /* //for exercise 1 and 2
+   int num;
+   char choice2;
+   while(choice2!='q')
    {
-      cout << P.front() << " ";
-      P.pop_front();
+      cout << "choose member function to test (first letter of f(x) or q to exit): ";
+      cin >>  choice2;
+      
+      if (choice2=='p')
+      {
+         cout << "value? ";
+         cin >> num;
+         test.pushFlexStack1(num);
+      }
+      else if (choice2=='P')
+      {
+         cout << "value? ";
+         cin >> num;
+         test.pushFlexStack2(num);
+      }
+      else if (choice2=='x')
+      {
+         cout << "deleting: " << test.popFlexStack1() << endl;
+         test.display();
+      }
+      else if (choice2=='X')
+      {
+         cout << "deleting: " << test.popFlexStack2() << endl;
+         test.display();
+      }
    }
-   cout << "test1" << endl;
-   return 0; */
+   */
+   
+   //for ex 3 test
+   stack<int> A, B, C;
+   A.push(4);
+   A.push(3);
+   A.push(2);
+   A.push(1);
+   
+   showTowerStates(4, A, B, C);
+   
 }
