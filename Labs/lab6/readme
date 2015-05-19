@@ -1,0 +1,36 @@
+lab 6 Questions
+
+Question 2
+   
+   Part a:
+   My selection sort is stabel because of the if statement:
+   
+   "if(*i<*min){min=i; newMin=true;}"
+   
+   This statement guarantees that the first instance of a value will be
+   palced before any following instances. If the statement had included a
+   less than or equal sign instead, the sorting would not have been stable
+   
+   "if(*i<=*min)".
+   
+   
+   Part b:
+   To test this I created a class which mirrors pairs, but who's comparison
+   operator only compares the first term. In this way i can see if the pairs
+   were sorted in a stable manner by comparing keeping track of teh second 
+   term in the pair (which would not be used to be sorted);
+   
+   class pair1{
+   public:
+    typedef pair<int, int> pair_type;  
+
+    struct compare {
+        bool operator()(const pair_type& a, const pair_type& b) {
+          if (a.first < b.first) return true;
+          else return false;
+        }   
+    };
+
+  private:
+    set<pair_type, compare> edge;
+   };
