@@ -32,4 +32,4 @@ void selectionsort(L &l){
      front++;
    }
    
-};
+}
