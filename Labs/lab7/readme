@@ -1,0 +1,9 @@
+Part B:
+
+From my data I can gather that self-balancing trees have quick lookup times, but
+slow insert times when compared to hash tables. On the other hand hash tables
+have slow lookup times, but quick insert times when compared to trees.
+
+For futher tests I may want to test different functions (such as pop) or test
+their space efficiency. In other words test not only how fast each data type 
+works but how much space it utilizes to store the same amount of items. 
